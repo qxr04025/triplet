@@ -1,4 +1,5 @@
 import os
+import os.path as osp
 import config as cfg
 import numpy as np
 
@@ -13,8 +14,9 @@ class sampledata():
         face_path = cfg.IMAGEPATH
 
         for num, personname in enumerate(sorted(os.listdir(face_path))):
-            person_path = face_path + personname + '/face'
-            picnames = [{'picname': personname + '/face/' + i, 'flipped': False}
+            #person_path = face_path + personname + '/face'
+            person_path = osp.join(face_path, personname)
+            picnames = [{'picname': osp.join(person_path, i), 'flipped': False}
                         for i in sorted(os.listdir(person_path))
                         if os.path.getsize(os.path.join(person_path, i)) > 0]
             pic_train = int(len(picnames) * cfg.PERCENT)

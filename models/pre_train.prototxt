@@ -482,7 +482,7 @@ layer {
    lr_mult: 2
  }
  inner_product_param {
-   num_output: 530
+   num_output: 10575
    weight_filler {
      type: "xavier"
    }
@@ -494,7 +494,7 @@ layer {
  bottom: "fc9"
  bottom: "labels"
  top: "accuracy"
- include: { phase: TEST }
+ #include: { phase: TEST }
 }
 layer {
  name: "loss_cls"

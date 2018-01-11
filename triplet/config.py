@@ -1,19 +1,20 @@
 import os
 
 # Training image data path
-IMAGEPATH = 'data/face/'
+IMAGEPATH = '/home/qinxiaoran/project/tripletloss/data/CASIA-Webface/CASIA-WebFace-MTCNNcrop_182'
 
 # LFW image data path
-LFW_IMAGEPATH = 'data/LFW/lfw-deepfunneled/'
+#LFW_IMAGEPATH = 'data/LFW/lfw-deepfunneled/'
 
 # Path to caffe directory
-CAFFEPATH = '~/caffe'
+CAFFEPATH = '/home/qinxiaoran/project/face-py-faster-rcnn/caffe-fast-rcnn'
 
 # Snapshot iteration
-SNAPSHOT_ITERS = 2000
+SNAPSHOT_ITERS = 10000
 
 # Max training iteration
-MAX_ITERS = 50000
+#8epoch for casia softmax
+MAX_ITERS = 80000
 
 # The number of samples in each minibatch for triplet loss
 TRIPLET_BATCH_SIZE = 50
@@ -22,7 +23,7 @@ TRIPLET_BATCH_SIZE = 50
 BATCH_SIZE = 60
 
 # If need to train tripletloss, set False when pre-train
-TRIPLET_LOSS = True
+TRIPLET_LOSS = False
 
 # Use horizontally-flipped images during training?
 FLIPPED = True

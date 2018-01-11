@@ -4,6 +4,7 @@ import cv2
 import copy
 import config as cfg
 from utils.blob import prep_im_for_blob, im_list_to_blob
+import os.path as osp
 
 
 class DataLayer(caffe.Layer):
@@ -56,7 +57,7 @@ class DataLayer(caffe.Layer):
         im_blob = []
         labels_blob = []
         for i in range(self.batch_size):
-            im = cv2.imread(cfg.IMAGEPATH + sample[i]['picname'])
+            im = cv2.imread(osp.join(cfg.IMAGEPATH, sample[i]['picname']))
             if sample[i]['flipped']:
                 im = im[:, ::-1, :]
             personname = sample[i]['picname'].split('/')[0]

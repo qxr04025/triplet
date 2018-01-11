@@ -1,0 +1,9 @@
+# python
+*.py[cod]
+
+# dataset
+data/
+
+# models
+models/imagenet_models
+output/

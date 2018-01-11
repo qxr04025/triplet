@@ -7,6 +7,7 @@ import numpy as np
 import os
 from caffe.proto import caffe_pb2
 import google.protobuf as pb2
+import google.protobuf.text_format
 
 
 class SolverWrapper(object):
@@ -60,10 +61,10 @@ class SolverWrapper(object):
             timer.toc()
 
             if self.solver.iter % (1 * self.solver_param.display) == 0:
-                print('---------------------------------------------------------')
+                #print('---------------------------------------------------------')
                 print('speed: {:.3f}s / iter'.format(timer.average_time))
-                print('time remains: {}s'.format(timer.remain(self.solver.iter, max_iters)))
-                print('---------------------------------------------------------')
+                #print('time remains: {}s'.format(timer.remain(self.solver.iter, max_iters)))
+                #print('---------------------------------------------------------')
 
             if self.solver.iter % cfg.SNAPSHOT_ITERS == 0:
                 last_snapshot_iter = self.solver.iter
@@ -81,10 +82,10 @@ class SolverWrapper(object):
 
 if __name__ == '__main__':
     """Train network."""
-    solver = 'models/solver.prototxt'
-    output_dir = 'data/models/triplet/'
-    pretrained_model = 'data/models/softmax/vggnet_softmax_iter_20000.caffemodel'
-    gpu_id = 0
+    solver = 'models/pre_solver.prototxt'
+    output_dir = 'output/casia_webface_softmax'
+    pretrained_model = 'models/imagenet_models/VGG16.v2.caffemodel'
+    gpu_id = 2
     data = sampledata()
     max_iters = cfg.MAX_ITERS
 
