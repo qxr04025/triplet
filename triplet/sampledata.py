@@ -16,14 +16,21 @@ class sampledata():
         for num, personname in enumerate(sorted(os.listdir(face_path))):
             #person_path = face_path + personname + '/face'
             person_path = osp.join(face_path, personname)
-            picnames = [{'picname': osp.join(person_path, i), 'flipped': False}
+            picnames = [{'picname': osp.join(personname, i), 'flipped': False}
                         for i in sorted(os.listdir(person_path))
-                        if os.path.getsize(os.path.join(person_path, i)) > 0]
-            pic_train = int(len(picnames) * cfg.PERCENT)
+                        if i.split('.') != '']
+            #picnames = [{'picname': osp.join(personname, i), 'flipped': False}
+            #            for i in sorted(os.listdir(person_path))
+            #            if os.path.getsize(os.path.join(person_path, i)) > 0]
+            #pic_train = int(len(picnames) * cfg.PERCENT)
+            #self._sample_person[personname] = picnames[:pic_train]
+            #self._sample_label[personname] = num
+            #self._sample.extend(picnames[:pic_train])
+            #self._sample_test.extend(picnames[pic_train:])
+            pic_train = int(len(picnames))
             self._sample_person[personname] = picnames[:pic_train]
             self._sample_label[personname] = num
             self._sample.extend(picnames[:pic_train])
-            self._sample_test.extend(picnames[pic_train:])
 
             if cfg.FLIPPED:
                 picnames_flipped = [{'picname': i['picname'], 'flipped': True}

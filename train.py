@@ -51,7 +51,10 @@ class SolverWrapper(object):
         """Network training loop."""
         last_snapshot_iter = -1
         timer = Timer()
-        losstxt = os.path.join(self.output_dir, 'loss.txt')
+        if cfg.TRIPLET_LOSS:
+            losstxt = os.path.join(self.output_dir, 'loss.txt')
+        else:
+            losstxt = os.path.join(self.output_dir, 'loss_cls.txt')
         f = open(losstxt, 'w')
 
         while self.solver.iter < max_iters:
@@ -69,8 +72,11 @@ class SolverWrapper(object):
             if self.solver.iter % cfg.SNAPSHOT_ITERS == 0:
                 last_snapshot_iter = self.solver.iter
                 self.snapshot()
-
-            loss = self.solver.net.blobs['loss'].data[0]
+            
+            if cfg.TRIPLET_LOSS:
+                loss = self.solver.net.blobs['loss'].data[0]
+            else:
+                loss = self.solver.net.blobs['loss_cls'].data[0]
             f.write('{} {}\n'.format(self.solver.iter - 1, loss))
             f.flush()
 
