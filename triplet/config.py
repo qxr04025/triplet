@@ -23,7 +23,7 @@ TRIPLET_BATCH_SIZE = 50
 BATCH_SIZE = 60
 
 # If need to train tripletloss, set False when pre-train
-TRIPLET_LOSS = False
+TRIPLET_LOSS = True
 
 # Use horizontally-flipped images during training?
 FLIPPED = True

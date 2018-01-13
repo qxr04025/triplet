@@ -540,14 +540,14 @@ layer {
   bottom: "fc9_1"
   top: "norm2"
   python_param {
-    module: "triplet.l2norm_layer"
+    module: "l2norm_layer"
     layer: "L2NormLayer"
   }
 }
-layer {
-  name: "loss_cls"
-  type: "Softmax"
-  # bottom: "fc9"
-  bottom: "norm2"
-  top: "loss_cls"
-}
+#layer {
+#  name: "loss_cls"
+#  type: "Softmax"
+#  # bottom: "fc9"
+#  bottom: "norm2"
+#  top: "loss_cls"
+#}

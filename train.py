@@ -76,7 +76,7 @@ class SolverWrapper(object):
             if cfg.TRIPLET_LOSS:
                 loss = self.solver.net.blobs['loss'].data[0]
             else:
-                loss = self.solver.net.blobs['loss_cls'].data[0]
+                loss = self.solver.net.blobs['loss_cls'].data
             f.write('{} {}\n'.format(self.solver.iter - 1, loss))
             f.flush()
 
@@ -88,9 +88,10 @@ class SolverWrapper(object):
 
 if __name__ == '__main__':
     """Train network."""
-    solver = 'models/pre_solver.prototxt'
-    output_dir = 'output/casia_webface_softmax'
-    pretrained_model = 'models/imagenet_models/VGG16.v2.caffemodel'
+    solver = 'models/solver.prototxt'
+    output_dir = 'output/casia_webface_triplet'
+    #pretrained_model = 'models/imagenet_models/VGG16.v2.caffemodel'
+    pretrained_model = 'output/casia_webface_softmax/s2_vgg_casia_softmax_iter_50000.caffemodel'
     gpu_id = 2
     data = sampledata()
     max_iters = cfg.MAX_ITERS
