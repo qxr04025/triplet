@@ -44,23 +44,21 @@ def prep_im_for_blob(args, im):
 
 def main(args):
     # Read the file containing the pairs used for testing
-    pairs = lfw.read_pairs(os.path.expanduser(args.lfw_pairs))
-    #pairs = characters.read_pairs(os.path.expanduser(args.lfw_pairs))
+    pairs = characters.read_pairs(os.path.expanduser(args.lfw_pairs))
     # Get the paths for the corresponding images
-    paths, actual_issame = lfw.get_paths(os.path.expanduser(args.lfw_dir), pairs, args.lfw_file_ext)
-    #paths, actual_issame = characters.get_paths(os.path.expanduser(args.lfw_dir), pairs, args.lfw_file_ext)
+    paths, actual_issame = characters.get_paths(os.path.expanduser(args.lfw_dir), pairs, args.lfw_file_ext)
     
     rootdir = '/home/qinxiaoran/project/triplet'
     prototxt = osp.join(rootdir, 'models/deploy.prototxt')
-    caffemodel = osp.join(rootdir, 'output/casia_webface_triplet_nofix_hard/vgg_casia_triplet_iter_80000.caffemodel')
-    #caffemodel = osp.join(rootdir, 'output/comic_characters_triplet/vgg_cha_triplet_iter_10000.caffemodel')
+    #caffemodel = osp.join(rootdir, 'output/casia_webface_triplet_nofix_hard/vgg_casia_triplet_iter_80000.caffemodel')
+    caffemodel = osp.join(rootdir, 'output/comic_characters_triplet_contriblossm/vgg_cha_triplet_iter_80000.caffemodel')
 
     caffe.set_mode_gpu()
     caffe.set_device(args.gpu_id)
     net = caffe.Net(prototxt, caffemodel, caffe.TEST)
     print('Loaded network {:s}'.format(caffemodel))
     
-    print('Runnning forward pass on LFW images')
+    print('Runnning forward pass on comic images')
     emb_array = []
     nrof_images = len(paths)
     for i in range(nrof_images):
@@ -75,7 +73,7 @@ def main(args):
     
     emb_array = np.array(emb_array)
     print('num of embeddings: ', len(emb_array))
-    tpr, fpr, accuracy, val, val_std, far = lfw.evaluate(emb_array, actual_issame, nrof_folds=args.lfw_nrof_folds)
+    tpr, fpr, accuracy, val, val_std, far = characters.evaluate(emb_array, actual_issame, nrof_folds=args.lfw_nrof_folds)
     print('Accuracy: %1.3f+-%1.3f' % (np.mean(accuracy), np.std(accuracy)))
     print('Validation rate: %2.5f+-%2.5f @ FAR=%2.5f' % (val, val_std, far))
 
@@ -83,13 +81,13 @@ def main(args):
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
     
-    parser.add_argument('--gpu_id', type=int, help='GPU device id to use [0]', default=3)
+    parser.add_argument('--gpu_id', type=int, help='GPU device id to use [0]', default=2)
     parser.add_argument('--lfw_dir', type=str,
-        help='Path to the data directory containing aligned LFW face patches.', default='/home/qinxiaoran/project/triplet/data/lfw/lfw-MTCNNcrop_160')
+        help='Path to the data directory containing aligned LFW face patches.', default='/home/qinxiaoran/project/triplet/data/comic_characters/characters_frcrop_182')
     parser.add_argument('--image_size', type=int,
         help='Image size (height, width) in pixels.', default=224)
     parser.add_argument('--lfw_pairs', type=str,
-        help='The file containing the pairs to use for validation.', default='/home/qinxiaoran/project/triplet/data/lfw/pairs.txt')
+        help='The file containing the pairs to use for validation.', default='/home/qinxiaoran/project/triplet/data/comic_characters/validation500_pairs.txt')
     parser.add_argument('--lfw_file_ext', type=str,
         help='The file extension for the LFW dataset.', default='jpg', choices=['jpg', 'png'])
     parser.add_argument('--lfw_nrof_folds', type=int,

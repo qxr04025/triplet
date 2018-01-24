@@ -23,34 +23,44 @@ class TripletLayer(caffe.Layer):
 
     def forward(self, bottom, top):
         """Get blobs and copy them into this layer's top blob vector."""
-        # self._timer.tic()
-        anchor = np.array(bottom[0].data)
-        positive = np.array(bottom[1].data)
-        negative = np.array(bottom[2].data)
-        aps = np.sum((anchor - positive) ** 2, axis=1)
-        ans = np.sum((anchor - negative) ** 2, axis=1)
-        # print 'ap' , aps
-        # print 'an' , ans
+        if bottom[0].num == 0:
+            print 'length of residual_list: ', str(0)
+            top[0].data[...] = 0.
+        
+        else:
+            # self._timer.tic()
+            anchor = np.array(bottom[0].data)
+            positive = np.array(bottom[1].data)
+            negative = np.array(bottom[2].data)
+            aps = np.sum((anchor - positive) ** 2, axis=1)
+            ans = np.sum((anchor - negative) ** 2, axis=1)
+            # print 'ap' , aps
+            # print 'an' , ans
 
-        dist = self.margin + aps - ans
-        dist_hinge = np.maximum(dist, 0.0)
+            dist = self.margin + aps - ans
+            dist_hinge = np.maximum(dist, 0.0)
+        
+            # add semi-hard mining
+            # if cfg.SEMI_HARD:
+            #     semihard = np.asarray(np.less(aps, ans), dtype=np.float)
+            #     dist_hinge *= semihard
 
-        # add semi-hard mining
-        # if cfg.SEMI_HARD:
-        #     semihard = np.asarray(np.less(aps, ans), dtype=np.float)
-        #     dist_hinge *= semihard
+            self.residual_list = np.asarray(dist_hinge > 0.0, dtype=np.float)
+            #print self.residual_list
+            print 'length of residual_list: ', len(self.residual_list)
+            loss = np.sum(dist_hinge) / bottom[0].num
 
-        self.residual_list = np.asarray(dist_hinge > 0.0, dtype=np.float)
-        loss = np.sum(dist_hinge) / bottom[0].num
-
-        top[0].data[...] = loss
-        # print 'loss' , loss
-        # self._timer.toc()
-        # print 'Loss:', self._timer.average_time
+            top[0].data[...] = loss
+            # print 'loss' , loss
+            # self._timer.toc()
+            # print 'Loss:', self._timer.average_time
 
     def backward(self, top, propagate_down, bottom):
         """Get top diff and compute diff in bottom."""
-        if propagate_down[0]:
+        if bottom[0].num == 0:
+            print 'no backward'
+            
+        if propagate_down[0] and bottom[0].num != 0:
             anchor = np.array(bottom[0].data)
             positive = np.array(bottom[1].data)
             negative = np.array(bottom[2].data)

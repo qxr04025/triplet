@@ -7,12 +7,15 @@ lr_policy: "multistep"
 gamma: 0.1
 
 #8epoch for casia softmax
-stepvalue: 30000
-max_iter: 50000
+#stepvalue: 30000
+#max_iter: 50000
+#180epoch for cha softmax
+stepvalue: 10000
+max_iter: 20000
 
 display: 100
 momentum: 0.9
 weight_decay: 0.0005
 snapshot: 10000
-snapshot_prefix: "output/casia_webface_softmax/s2_vgg_casia_softmax"
+snapshot_prefix: "output/comic_characters_softmax/vgg_cha_softmax"
 solver_mode: GPU

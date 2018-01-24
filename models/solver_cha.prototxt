@@ -1,4 +1,4 @@
-net: "models/train.prototxt"
+net: "models/train_cha.prototxt"
 #test_iter: 0
 #test_interval: 1000000
 
@@ -14,5 +14,5 @@ display: 100
 momentum: 0.9
 weight_decay: 0.0005
 snapshot: 10000
-snapshot_prefix: "output/casia_webface_triplet_nofix_hard/vgg_casia_triplet"
+snapshot_prefix: "output/comic_characters_triplet_contriblossm/vgg_cha_triplet"
 solver_mode: GPU

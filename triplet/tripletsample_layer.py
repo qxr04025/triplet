@@ -14,6 +14,7 @@ class TripletSampleLayer(caffe.Layer):
         top[2].reshape(*bottom[0].data.shape)
         self._timer = Timer()
         self._negative_timer = Timer()
+        self.margin = 0.2
 
     def forward(self, bottom, top):
         """Get blobs and copy them into this layer's top blob vector."""
@@ -46,35 +47,44 @@ class TripletSampleLayer(caffe.Layer):
                 negative = bottom_data[negative_index]
                 # need semi-hard mining?
                 semihard = True
+                contribloss = True
                 # max iteration
                 max_iter = bottom[0].num * 2
-                while len(label_index_map) > 1 and (negative_label == anchor_label or semihard):
+                while len(label_index_map) > 1 and (negative_label == anchor_label or semihard or contribloss):
                     negative_label = np.random.choice(label_index_map.keys())
                     negative_index = np.random.choice(
                         label_index_map[negative_label])
                     negative = bottom_data[negative_index]
-
+                    
+                    ap = np.sum((anchor - positive) ** 2)
+                    an = np.sum((anchor - negative) ** 2)
                     if cfg.SEMI_HARD:
-                        ap = np.sum((anchor - positive) ** 2)
-                        an = np.sum((anchor - negative) ** 2)
+                        #ap = np.sum((anchor - positive) ** 2)
+                        #an = np.sum((anchor - negative) ** 2)
                         semihard = ap >= an
                     else:
                         semihard = False
+                        
+                    if cfg.CONTRIB_LOSS:
+                        contribloss = (ap + self.margin) < an
+                    else:
+                        contribloss = False
 
                     max_iter -= 1
                     if max_iter <= 0:
                         # print 'Semi-hard failed'
-                        negative_label = anchor_label
-                        negative_index = positive_index
-                        negative = positive
+                        #negative_label = anchor_label
+                        #negative_index = positive_index
+                        #negative = positive
                         break
                 # print [anchor_label, negative_label]
+                
+                if max_iter > 0:
+                    top_anchor.append(anchor)
+                    top_positive.append(positive)
+                    top_negative.append(negative)
 
-                top_anchor.append(anchor)
-                top_positive.append(positive)
-                top_negative.append(negative)
-
-                self.index_map.append([i, positive_index, negative_index])
+                    self.index_map.append([i, positive_index, negative_index])
 
         top[0].reshape(*np.array(top_anchor).shape)
         top[1].reshape(*np.array(top_anchor).shape)

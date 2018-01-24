@@ -88,11 +88,11 @@ class SolverWrapper(object):
 
 if __name__ == '__main__':
     """Train network."""
-    solver = 'models/solver.prototxt'
-    output_dir = 'output/casia_webface_triplet_nofix_hard'
+    solver = 'models/solver_cha.prototxt'
+    output_dir = 'output/comic_characters_triplet_contriblossm'
     #pretrained_model = 'models/imagenet_models/VGG16.v2.caffemodel'
-    pretrained_model = 'output/casia_webface_softmax/s2_vgg_casia_softmax_iter_50000.caffemodel'
-    gpu_id = 2
+    pretrained_model = 'output/comic_characters_softmax/vgg_cha_softmax_iter_20000.caffemodel'
+    gpu_id = 3
     data = sampledata()
     max_iters = cfg.MAX_ITERS
 
